@@ -12,7 +12,7 @@ The solution consists of multiple C# projects targeting .NET Framework:
 - **RemoteUI** - Remote administration interface
 - **Settings** - Registry-based configuration management
 - **ProcessCommunication** - Inter-process communication layer
-- **Logging** - Event logging and syslog integration
+- **Logging** - Windows Event Log integration (dedicated MakeMeAdmin log)
 - **UserList** - User/group management
 - **LsaLogonSessions** - Windows logon session handling
 
@@ -24,16 +24,31 @@ The solution consists of multiple C# projects targeting .NET Framework:
 ## Build System
 Uses MSBuild with Visual Studio 2022. Supports both x86 and x64 platforms.
 
+**IMPORTANT**: Always perform a full clean before building to avoid issues with stale artifacts, especially after removing files or changing project configurations.
+
 ### Build Commands
 ```bash
-# Clean
+# Full Clean (RECOMMENDED - always clean before building)
 "C:\Program Files\Microsoft Visual Studio\2022\Professional\MSBuild\Current\Bin\MSBuild.exe" MakeMeAdmin.sln -t:Clean -p:Configuration=Release -p:Platform=x86
 "C:\Program Files\Microsoft Visual Studio\2022\Professional\MSBuild\Current\Bin\MSBuild.exe" MakeMeAdmin.sln -t:Clean -p:Configuration=Release -p:Platform=x64
 
-# Build
+# Build (after clean)
 "C:\Program Files\Microsoft Visual Studio\2022\Professional\MSBuild\Current\Bin\MSBuild.exe" MakeMeAdmin.sln -t:Build -p:Configuration=Release -p:Platform=x86
 "C:\Program Files\Microsoft Visual Studio\2022\Professional\MSBuild\Current\Bin\MSBuild.exe" MakeMeAdmin.sln -t:Build -p:Configuration=Release -p:Platform=x64
+
+# Alternative: Clean and Build in one command
+"C:\Program Files\Microsoft Visual Studio\2022\Professional\MSBuild\Current\Bin\MSBuild.exe" MakeMeAdmin.sln -t:Clean;Build -p:Configuration=Release -p:Platform=x86
+"C:\Program Files\Microsoft Visual Studio\2022\Professional\MSBuild\Current\Bin\MSBuild.exe" MakeMeAdmin.sln -t:Clean;Build -p:Configuration=Release -p:Platform=x64
 ```
+
+### Build Best Practices
+- **Always clean before building** to prevent issues with:
+  - Stale multilingual satellite assemblies
+  - Cached project references
+  - Outdated WiX installer components
+  - Resource file conflicts
+- **Avoid incremental builds** when making structural changes to projects
+- **Clean both platforms** when switching between x86/x64 builds
 
 ### WiX Installer Issues
 - WiX Toolset v3.11 path configuration problem
@@ -48,13 +63,12 @@ Uses MSBuild with Visual Studio 2022. Supports both x86 and x64 platforms.
 - **WinForms** - User interface framework
 - **Windows Security APIs** - LSA, token manipulation
 - **WiX Toolset** - Installer creation
-- **Syslog** - External logging integration
 
 ## Configuration
 Settings are stored in Windows Registry under policy and preference keys:
 - **Allowed Entities** - Users/groups permitted to request elevation
 - **Timeout Settings** - Duration of temporary admin rights
-- **Logging Configuration** - Event log and syslog settings
+- **Logging Configuration** - Event log settings
 - **Service Endpoints** - TCP and Named Pipe communication settings
 
 ## Security Model
