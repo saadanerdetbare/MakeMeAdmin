@@ -62,10 +62,6 @@ namespace SinclairCC.MakeMeAdmin
         /// </summary>
         SessionChangeEvent,
 
-        /// <summary>
-        /// Syslog server info, stored in the registry, is invalid in some way.
-        /// </summary>
-        RejectedSyslogServerInfo,
 
         /// <summary>
         /// Event ID for debug messages.

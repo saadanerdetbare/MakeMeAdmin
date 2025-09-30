@@ -20,10 +20,8 @@
 
 namespace SinclairCC.MakeMeAdmin
 {
-    using System.Threading.Tasks;
-
     /// <summary>
-    /// This class allows simple logging of application events.
+    /// This class allows simple logging of application events to the MakeMeAdmin Windows Event Log.
     /// </summary>
     public class ApplicationLog
     {
@@ -74,95 +72,9 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
-        /*
-        /// <summary>
-        /// Writes the specified message to the event log as an information event
-        /// with the specified event ID.
-        /// </summary>
-        /// <param name="message">
-        /// The message to be written to the log.
-        /// </param>
-        /// <param name="id">
-        /// The event ID to use for the event being written.
-        /// </param>
-        public static void WriteInformationEvent(string message, EventID id)
-        {
-            log.WriteEntry(message, System.Diagnostics.EventLogEntryType.Information, (int)id);
-            //System.Diagnostics.EventLogEntryType.
-
-            int j = 0;
-            Task[] tasks = new Task[Settings.SyslogServers.Count];
-
-            foreach (SyslogServerInfo serverInfo in Settings.SyslogServers)
-            {
-                if (serverInfo.IsValid)
-                {
-                    Syslog syslog = new Syslog(serverInfo.Hostname, serverInfo.Port, serverInfo.Protocol, serverInfo.RFC);
-                    tasks[j] = Task.Factory.StartNew(() => syslog.SendMessage(message, id.ToString(), SyslogNet.Client.Severity.Informational));
-                }
-                j++;
-            }
-        }
 
         /// <summary>
-        /// Writes the specified message to the event log as an error event with the
-        /// specified event ID.
-        /// </summary>
-        /// <param name="message">
-        /// The message to be written to the log.
-        /// </param>
-        /// <param name="id">
-        /// The event ID to use for the event being written.
-        /// </param>
-        public static void WriteErrorEvent(string message, EventID id)
-        {
-            log.WriteEntry(message, System.Diagnostics.EventLogEntryType.Error, (int)id);
-
-            int j = 0;
-            Task[] tasks = new Task[Settings.SyslogServers.Count];
-
-            foreach (SyslogServerInfo serverInfo in Settings.SyslogServers)
-            {
-                if (serverInfo.IsValid)
-                {
-                    Syslog syslog = new Syslog(serverInfo.Hostname, serverInfo.Port, serverInfo.Protocol, serverInfo.RFC);
-                    tasks[j] = Task.Factory.StartNew(() => syslog.SendMessage(message, id.ToString(), SyslogNet.Client.Severity.Error));
-                }
-                j++;
-            }
-        }
-
-        /// <summary>
-        /// Writes the specified message to the event log as a warning event with the
-        /// specified event ID.
-        /// </summary>
-        /// <param name="message">
-        /// The message to be written to the log.
-        /// </param>
-        /// <param name="id">
-        /// The event ID to use for the event being written.
-        /// </param>
-        public static void WriteWarningEvent(string message, EventID id)
-        {
-            log.WriteEntry(message, System.Diagnostics.EventLogEntryType.Warning, (int)id);
-
-            int j = 0;
-            Task[] tasks = new Task[Settings.SyslogServers.Count];
-
-            foreach (SyslogServerInfo serverInfo in Settings.SyslogServers)
-            {
-                if (serverInfo.IsValid)
-                {
-                    Syslog syslog = new Syslog(serverInfo.Hostname, serverInfo.Port, serverInfo.Protocol, serverInfo.RFC);
-                    tasks[j] = Task.Factory.StartNew(() => syslog.SendMessage(message, id.ToString(), SyslogNet.Client.Severity.Warning));
-                }
-                j++;
-            }
-        }
-        */
-
-        /// <summary>
-        /// Writes an event to the log.
+        /// Writes an event to the MakeMeAdmin Windows Event Log.
         /// </summary>
         /// <param name="message">
         /// The message to write to the log.
@@ -175,39 +87,18 @@ namespace SinclairCC.MakeMeAdmin
         /// </param>
         public static void WriteEvent(string message, EventID id, System.Diagnostics.EventLogEntryType entryType)
         {
-            log.WriteEntry(message, entryType, (int)id);
-
-            int j = 0;
-            Task[] tasks = new Task[Settings.SyslogServers.Count];
-
-            // Determine the syslog severity for this event, based on the event log entry type.
-            SyslogNet.Client.Severity severity = SyslogNet.Client.Severity.Informational;
-            switch (entryType)
+            try
             {
-                case System.Diagnostics.EventLogEntryType.Error:
-                    severity = SyslogNet.Client.Severity.Error;
-                    break;
-                case System.Diagnostics.EventLogEntryType.Warning:
-                    severity = SyslogNet.Client.Severity.Warning;
-                    break;
-                case System.Diagnostics.EventLogEntryType.FailureAudit:
-                    severity = SyslogNet.Client.Severity.Alert;
-                    break;
-                case System.Diagnostics.EventLogEntryType.SuccessAudit:
-                    severity = SyslogNet.Client.Severity.Notice;
-                    break;
-                default:
-                    break;
+                log.WriteEntry(message, entryType, (int)id);
             }
-
-            foreach (SyslogServerInfo serverInfo in Settings.SyslogServers)
+            catch (System.Security.SecurityException)
             {
-                if (serverInfo.IsValid)
-                {
-                    Syslog syslog = new Syslog(serverInfo.Hostname, serverInfo.Port, serverInfo.Protocol, serverInfo.RFC);
-                    tasks[j] = Task.Factory.StartNew(() => syslog.SendMessage(message, id.ToString(), severity));
-                }
-                j++;
+                // If we don't have permission to write to the event log, fail silently
+                // This can happen if the event log source is not properly registered
+            }
+            catch (System.InvalidOperationException)
+            {
+                // If the event log doesn't exist or source is invalid, fail silently
             }
         }
     }
