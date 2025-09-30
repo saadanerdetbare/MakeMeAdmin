@@ -183,8 +183,8 @@ namespace SinclairCC.MakeMeAdmin
             bool userIsAuthorized = adminGroupManipulator.UserIsAuthorized(userIdentity, Settings.LocalAllowedEntities, Settings.LocalDeniedEntities);
 
             if (!string.IsNullOrEmpty(remoteAddress))
-            { // Request is from a remote computer. Check the remote authorization list.
-                userIsAuthorized &= adminGroupManipulator.UserIsAuthorized(userIdentity, Settings.RemoteAllowedEntities, Settings.RemoteDeniedEntities);
+            { // Request is from a remote computer. Remote requests are no longer supported.
+                userIsAuthorized = false;
             }
 
             if (

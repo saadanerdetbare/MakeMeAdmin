@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
-  <Product Id="*" Name="!(loc.SoftwareName)" Language="!(loc.LANG)" Version="2.3.82" Manufacturer="!(loc.SoftwareManufacturer)" UpgradeCode="9c690479-3987-48a8-8bda-118ef1f93cdd">
+  <Product Id="*" Name="!(loc.SoftwareName)" Language="!(loc.LANG)" Version="2.3.83" Manufacturer="!(loc.SoftwareManufacturer)" UpgradeCode="9c690479-3987-48a8-8bda-118ef1f93cdd">
     <Package InstallerVersion="400" Compressed="yes" InstallScope="perMachine" />
     <Condition Message="!(loc.AdminRightsRequired)">Privileged</Condition>
     <MajorUpgrade DowngradeErrorMessage="!(loc.NewerVersionInstalled)" />
@@ -35,20 +35,6 @@
       <Condition Level="0">INSTALLMAKEMEADMIN = "0"</Condition>
     </Feature>
     
-    <Feature Id="MakeMeAdminRemote" Title="[ProductName] !(loc.Remote)" Level="0">
-      <ComponentRef Id="RemoteElevationUserInterface"/>
-      <ComponentRef Id="RemoteElevation_da"/>
-      <ComponentRef Id="RemoteElevation_fr"/>
-      <ComponentRef Id="EnumerationsLibrary" />
-      <ComponentRef Id="MruListLibrary"/>
-      <ComponentRef Id="LoggingLibrary" />      
-      <ComponentRef Id="SettingsLibrary" />
-      <ComponentRef Id="ProcessCommunicationLibrary" />
-      <ComponentRef Id="ProcessCommunicationLibrary_da" />
-      <ComponentRef Id="ProcessCommunicationLibrary_fr" />
-      
-      <Condition Level="1">(INSTALLREMOTE = "1") OR REMOVE</Condition>
-    </Feature>
     
     <Icon Id="SecurityLock.ico" SourceFile="..\SecurityLock.ico"/>
     <Property Id="ARPPRODUCTICON" Value="SecurityLock.ico" />
@@ -67,9 +53,6 @@
       <Directory Id="$(var.PlatformProgramFilesFolder)">
         <Directory Id="INSTALLFOLDER" Name="Make Me Admin">
           <Directory Id="fr_Localization" Name="fr">
-            <Component Id="RemoteElevation_fr" Guid="1152E967-8A78-4684-A401-0CBDFC47D34F">
-              <File Id="RemoteElevationResources_fr" Name="$(var.RemoteUI.TargetName).resources.dll" Source="$(var.RemoteUI.TargetDir)fr\$(var.RemoteUI.TargetName).resources.dll" KeyPath="no" />
-            </Component>
             <Component Id="Service_fr" Guid="98EABA24-D4D4-4D96-B417-946F4648F682">
               <File Id="ServiceResources_fr" Name="$(var.Service.TargetName).resources.dll" Source="$(var.Service.TargetDir)fr\$(var.Service.TargetName).resources.dll" KeyPath="no" />
             </Component>
@@ -82,9 +65,6 @@
           </Directory>
 
           <Directory Id="da_Localization" Name="da">
-            <Component Id="RemoteElevation_da" Guid="B4496726-831F-4EC4-A2A5-6E5C2A85FF97">
-              <File Id="RemoteElevationResources_da" Name="$(var.RemoteUI.TargetName).resources.dll" Source="$(var.RemoteUI.TargetDir)da\$(var.RemoteUI.TargetName).resources.dll" KeyPath="no" />
-            </Component>
             <Component Id="Service_da" Guid="53AF34B4-05E1-4C1E-8802-753588AA32AF">
               <File Id="ServiceResources_da" Name="$(var.Service.TargetName).resources.dll" Source="$(var.Service.TargetDir)da\$(var.Service.TargetName).resources.dll" KeyPath="no" />
             </Component>
@@ -102,13 +82,6 @@
           </Component>
           <Component Id="EnumerationsLibrary" Guid="D41B7874-D819-479B-9C90-248A1563FDA4">
             <File Id="EnumerationsDll" Name="$(var.Enumerations.TargetFileName)" Source="$(var.Enumerations.TargetPath)" KeyPath="yes" />
-          </Component>
-          <Component Id="RemoteElevationUserInterface" Guid="E62C25C4-A0E8-45B4-8313-6954A8C2F6F9">
-            <File Id="RemoteElevationUserInterfaceExe" Name="$(var.RemoteUI.TargetFileName)" Source="$(var.RemoteUI.TargetPath)" KeyPath="yes" />
-            <Shortcut Id="RemoteUserInferfaceShortcut" Directory="ProgramMenuFolder" Name="Make Me Admin Remote" Description="Make Me Admin Remote User Interface" Advertise="yes" WorkingDirectory="INSTALLDIR" Icon="SecurityLock.ico" IconIndex="0" />
-          </Component>
-          <Component Id="MruListLibrary" Guid="291425FC-1060-4197-9950-D2DC5CFD3F6B">
-            <File Id="MruLibrary" Name="MruList.dll" Source="$(var.RemoteUI.TargetDir)\MruList.dll" KeyPath="yes" />
           </Component>
           <Component Id="SettingsLibrary" Guid="DFF604F6-F91A-4C6C-8582-91D698EAD179">
             <File Id="SettingsDll" Name="$(var.Settings.TargetFileName)" Source="$(var.Settings.TargetPath)" KeyPath="yes" />

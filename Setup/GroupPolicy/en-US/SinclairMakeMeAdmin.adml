@@ -14,8 +14,6 @@
 			<string id="AllowedEntitiesDisplayName">Allowed Entities (Local)</string>
 			<string id="AllowedEntitiesExplainText">Specifies the security IDs (SIDs) or names of the users or groups allowed to gain administrative rights on the local computer.</string>
 
-			<string id="RemoteAllowedEntitiesDisplayName">Allowed Entities (Remote)</string>
-			<string id="RemoteAllowedEntitiesExplainText">Specifies the security IDs (SIDs) or names of the users or groups allowed to gain administrative rights remotely.</string>
 
 			<string id="AutomaticallyAddAllowedEntitiesDisplayName">Automatically Added Entities</string>
 			<string id="AutomaticallyAddAllowedEntitiesExplainText">Specifies the security IDs (SIDs) or names of the users or groups to be added to the Administrators group automatically upon logon.</string>
@@ -23,8 +21,6 @@
 			<string id="DeniedEntitiesDisplayName">Denied Entities (Local)</string>
 			<string id="DeniedEntitiesExplainText">Specifies the security IDs (SIDs) or names of the users or groups denied the ability to gain administrative rights on the local computer.</string>
 
-			<string id="RemoteDeniedEntitiesDisplayName">Denied Entities (Remote)</string>
-			<string id="RemoteDeniedEntitiesExplainText">Specifies the security IDs (SIDs) or names of the users or groups denied the ability to gain administrative rights remotely.</string>
 
 			<string id="AutomaticallyAddDeniedEntitiesDisplayName">Never Automatically Added Entities</string>
 			<string id="AutomaticallyAddDeniedEntitiesExplainText">Specifies the security IDs (SIDs) or names of the users or groups NEVER to be added to the Administrators group automatically upon logon.</string>
@@ -41,8 +37,6 @@
 			<string id="LogOffMessageDisplayName">Log Off Message</string>
 			<string id="LogOffMessageExplainText">Specifies a message to be displayed before a user is logged off, once their administrator privileges expire.</string>
 
-			<string id="TCPServicePortDisplayName">TCP Service Port</string>
-			<string id="TCPServicePortExplainText">Specifies the TCP port to be used for remote administrative rights requests.</string>
 
 			<string id="RemoveOnLogoutDisplayName">Remove Admin Rights On Logout</string>
 			<string id="RemoveOnLogoutExplainText">Specifies whether administrative rights should be revoked when a user logs off.</string>
@@ -53,11 +47,6 @@
 			<string id="RequireAuthForPrivilegesDisplayName">Require Authentication to Obtain Privileges</string>
 			<string id="RequireAuthForPrivilegesExplainText">Specifies whether the user must authenticate before being granted administrative privileges.</string>
 
-			<string id="AllowRemoteRequestsDisplayName">Allow Remote Requests</string>
-			<string id="AllowRemoteRequestsExplainText">Specifies whether administrative rights can be requested by authorized users on a remote computer.</string>
-
-			<string id="EndRemoteSessionsDisplayName">End Remote Sessions When Rights Expire</string>
-			<string id="EndRemoteSessionsExplainText">Specifies whether remote sessions are closed when the corresponding user's rights expire.</string>
 
 			<string id="CloseApplicationDisplayName">Close Application When Rights Expire</string>
 			<string id="CloseApplicationExplainText">Specifies whether the application is closed when the user's rights expire.</string>
@@ -107,24 +96,14 @@
 			<presentation id="Log_Off_Message_TextBox">
 				<multiTextBox refId="LogOffMessageTextBox">Enter a message to be displayed to users before they are logged off.</multiTextBox>
 			</presentation>
-			<presentation id="TCP_Service_Port_Spin">
-				<text>The TCP port to be used for remote administrative rights requests.</text>
-				<decimalTextBox refId="TCPServicePortValue" defaultValue="808" spin="false">TCP Service Port:</decimalTextBox>
-			</presentation>
 			<presentation id="AllowedEntitiesMultiText_Presentation">
 				<multiTextBox refId="AllowedEntitiesMultiText">Enter allowed SIDs or names:</multiTextBox>
-			</presentation>
-			<presentation id="RemoteAllowedEntitiesMultiText_Presentation">
-				<multiTextBox refId="RemoteAllowedEntitiesMultiText">Enter allowed SIDs or names:</multiTextBox>
 			</presentation>
 			<presentation id="AllowedAutomaticallyAddMultiText_Presentation">
 				<multiTextBox refId="AllowedAutomaticallyAddEntitiesMultiText">Enter allowed SIDs or names:</multiTextBox>
 			</presentation>
 			<presentation id="DeniedEntitiesMultiText_Presentation">
 				<multiTextBox refId="DeniedEntitiesMultiText">Enter denied SIDs or names:</multiTextBox>
-			</presentation>
-			<presentation id="RemoteDeniedEntitiesMultiText_Presentation">
-				<multiTextBox refId="RemoteDeniedEntitiesMultiText">Enter denied SIDs or names:</multiTextBox>
 			</presentation>
 			<presentation id="CannedReasonsMultiText_Presentation">
 				<multiTextBox refId="CannedReasonsMultiText">Enter the canned responses for the reason dialog box, one per line:</multiTextBox>
