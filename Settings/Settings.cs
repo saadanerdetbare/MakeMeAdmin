@@ -82,7 +82,6 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
-        // TODO: i18n.
         public static string[] LocalAllowedEntities
         {
             get
@@ -104,7 +103,6 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
-        // TODO: i18n.
         public static string[] LocalDeniedEntities
         {
             get
@@ -126,7 +124,6 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
-        // TODO: i18n.
         public static string[] AutomaticAddAllowed
         {
             get
@@ -148,7 +145,6 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
-        // TODO: i18n.
         public static string[] AutomaticAddDenied
         {
             get
@@ -170,7 +166,6 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
-        // TODO: i18n.
         public static string[] RemoteAllowedEntities
         {
             get
@@ -192,7 +187,6 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
-        // TODO: i18n.
         public static string[] RemoteDeniedEntities
         {
             get
@@ -215,7 +209,6 @@ namespace SinclairCC.MakeMeAdmin
         }
 
 
-        // TODO: i18n.
         public static System.Collections.Generic.Dictionary<string, string> TimeoutOverrides
         {
             get
@@ -253,7 +246,6 @@ namespace SinclairCC.MakeMeAdmin
         */
 
 
-        // TODO: i18n.
         public static int RenewalsAllowed
         {
             get
@@ -279,7 +271,6 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
-        // TODO: i18n.
         public static int AdminRightsTimeout
         {
             get
@@ -305,7 +296,6 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
-        // TODO: i18n.
         public static int LogOffAfterExpiration
         {
             get
@@ -331,7 +321,6 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
-        // TODO: i18n.
         public static string[] LogOffMessage
         {
             get
@@ -357,7 +346,6 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
-        // TODO: i18n.
         public static bool RemoveAdminRightsOnLogout
         {
             get
@@ -384,7 +372,6 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
-        // TODO: i18n.
         public static bool OverrideRemovalByOutsideProcess
         {
             get
@@ -411,7 +398,6 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
-        // TODO: i18n.
         public static bool RequireAuthenticationForPrivileges
         {
             get
@@ -437,7 +423,6 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
-        // TODO: i18n.
         public static bool AllowRemoteRequests
         {
             get
@@ -463,7 +448,6 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
-        // TODO: i18n.
         public static bool EndRemoteSessionsUponExpiration
         {
             get
@@ -489,7 +473,6 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
-        // TODO: i18n.
         public static bool CloseApplicationOnExpiration
         {
             get
@@ -593,7 +576,6 @@ namespace SinclairCC.MakeMeAdmin
         }
 
 
-        // TODO: i18n.
         public static string[] CannedReasons
         {
             get
@@ -615,7 +597,6 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
-        // TODO: i18n.
         public static ElevatedProcessLogging LogElevatedProcesses
         {
             get
@@ -656,7 +637,6 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
-        // TODO: i18n.
         public static int MaximumReasonLength
         {
             get
@@ -682,7 +662,6 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
-        // TODO: i18n.
         public static int TCPServicePort
         {
             get

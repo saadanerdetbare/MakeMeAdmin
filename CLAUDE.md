@@ -26,6 +26,14 @@ Uses MSBuild with Visual Studio 2022. Supports both x86 and x64 platforms.
 
 **IMPORTANT**: Always perform a full clean before building to avoid issues with stale artifacts, especially after removing files or changing project configurations.
 
+### Build Order Dependencies
+The solution includes a WiX installer project that **must build last**. The solution has been configured with proper project dependencies to ensure:
+
+1. **All C# projects build first**: Enumerations, LsaLogonSessions, Logging, UserList, ProcessCommunication, RemoteUI, Service, Settings, LocalUI, WiXCustomAction
+2. **WiX Setup project builds last**: The Setup project depends on all other projects and will automatically build after them
+
+This prevents the common issue where WiX fails because it cannot find assembly files that haven't been built yet.
+
 ### Build Commands
 ```bash
 # Full Clean (RECOMMENDED - always clean before building)
@@ -51,9 +59,10 @@ Uses MSBuild with Visual Studio 2022. Supports both x86 and x64 platforms.
 - **Clean both platforms** when switching between x86/x64 builds
 
 ### WiX Installer Issues
-- WiX Toolset v3.11 path configuration problem
-- Requires admin rights to build installer projects
-- Need to restart Visual Studio with admin rights to resolve WiX targets path
+- **WiX Toolset v3.11 path configuration problem**: Error finding wix.targets in expected MSBuild path
+- **Requires admin rights**: Need to restart Visual Studio with admin rights to resolve WiX targets path
+- **Build order dependency**: WiX project automatically builds last due to solution dependencies (configured)
+- **Assembly version detection**: WiX reads Service.exe version during build, requires Service to be built first
 
 ## Key Technologies
 - **C# / .NET Framework** - Primary development platform

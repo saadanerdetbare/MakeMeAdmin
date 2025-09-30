@@ -314,7 +314,25 @@ namespace SinclairCC.MakeMeAdmin
 
                         processList.FindAll(p => (p.ProcessID == nextProcess.ProcessID) && (p.SessionID == nextProcess.SessionID)).ForEach(action =>
                         {
-                            LoggingProvider.Log.ElevatedProcessDetected(nextProcess.ElevationType, action);
+                            string elevationTypeString = "Unknown";
+                            switch (nextProcess.ElevationType)
+                            {
+                                case TokenElevationType.Full:
+                                    elevationTypeString = "Full";
+                                    break;
+                                case TokenElevationType.Limited:
+                                    elevationTypeString = "Limited";
+                                    break;
+                                case TokenElevationType.Default:
+                                    elevationTypeString = "Default";
+                                    break;
+                            }
+
+                            string message = string.Format(
+                                "Process {0} created at {1} by user {2} in session {3} with an elevation type of {4}.\r\ncommand line: \"{5}\"\r\nprocess ID: \"{6}\"",
+                                action.ImageFileName, action.CreateTime, action.UserSIDString, action.SessionID, elevationTypeString, action.CommandLine, action.ProcessID);
+
+                            ApplicationLog.WriteEvent(message, EventID.ElevatedProcess, System.Diagnostics.EventLogEntryType.Information);
                         });
                     }
                 }

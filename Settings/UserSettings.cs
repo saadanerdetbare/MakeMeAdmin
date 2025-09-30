@@ -37,7 +37,6 @@ namespace SinclairCC.MakeMeAdmin
         /// </summary>
         public static string[] HostNameMru
         {
-            // TODO: i18n.
             get
             {
                 string[] preferenceAllowedEntities = GetMultiString(PreferenceRegistryKeyPath, null, "Host Name MRU");
