@@ -25,6 +25,7 @@ namespace LsaLogonSessions
     /// <summary>
     /// Contains information about the group security identifiers (SIDs) in an access token.
     /// </summary>
+#pragma warning disable 0649 // Field is never assigned to - populated by P/Invoke marshalling
     internal struct TOKEN_GROUPS
     {
         /// <summary>
@@ -38,4 +39,5 @@ namespace LsaLogonSessions
         [MarshalAs(UnmanagedType.ByValArray)]
         public SID_AND_ATTRIBUTES[] Groups;
     }
+#pragma warning restore 0649
 }

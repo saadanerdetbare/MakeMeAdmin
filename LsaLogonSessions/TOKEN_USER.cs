@@ -23,6 +23,7 @@ namespace LsaLogonSessions
     /// <summary>
     /// Identifies the user associated with an access token.
     /// </summary>
+#pragma warning disable 0649 // Field is never assigned to - populated by P/Invoke marshalling
     internal struct TOKEN_USER
     {
         /// <summary>
@@ -30,4 +31,5 @@ namespace LsaLogonSessions
         /// </summary>
         public SID_AND_ATTRIBUTES User;
     }
+#pragma warning restore 0649
 }

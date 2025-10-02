@@ -137,7 +137,8 @@
             <File Id="Dia2Lib.dll" Source="$(var.Logging.TargetDir)\Dia2Lib.dll" KeyPath="no" />
             <File Id="Microsoft.Diagnostics.FastSerialization.dll" Source="$(var.Logging.TargetDir)\Microsoft.Diagnostics.FastSerialization.dll" KeyPath="no" />
             <!-- <File Id="Microsoft.Diagnostics.FastSerialization.xml" Source="$(var.Logging.TargetDir)\Microsoft.Diagnostics.FastSerialization.xml" KeyPath="no" /> -->
-            <File Id="Microsoft.Diagnostics.Tracing.EventSource.dll" Source="$(var.Logging.TargetDir)\Microsoft.Diagnostics.Tracing.EventSource.dll" KeyPath="no" />
+            <!-- Microsoft.Diagnostics.Tracing.EventSource.dll no longer included in TraceEvent 3.1.2 package -->
+            <!-- <File Id="Microsoft.Diagnostics.Tracing.EventSource.dll" Source="$(var.Logging.TargetDir)\Microsoft.Diagnostics.Tracing.EventSource.dll" KeyPath="no" /> -->
             <!-- <File Id="Microsoft.Diagnostics.Tracing.EventSource.xml" Source="$(var.Logging.TargetDir)\Microsoft.Diagnostics.Tracing.EventSource.xml" KeyPath="no" /> -->
             <File Id="Microsoft.Diagnostics.Tracing.TraceEvent.dll" Source="$(var.Logging.TargetDir)\Microsoft.Diagnostics.Tracing.TraceEvent.dll" KeyPath="no" />
             <!-- <File Id="Microsoft.Diagnostics.Tracing.TraceEvent.xml" Source="$(var.Logging.TargetDir)\Microsoft.Diagnostics.Tracing.TraceEvent.xml" KeyPath="no" /> -->
