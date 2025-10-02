@@ -18,19 +18,19 @@
     <IntermediateOutputPath>obj\$(Configuration) $(Platform)\</IntermediateOutputPath>
     <DefineConstants>Debug</DefineConstants>
     <SuppressIces>ICE57</SuppressIces>
-    <Cultures>en-US</Cultures>
+    <Cultures></Cultures>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\$(Configuration) $(Platform)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration) $(Platform)\</IntermediateOutputPath>
     <SuppressIces>ICE57</SuppressIces>
-    <Cultures>en-US</Cultures>
+    <Cultures></Cultures>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
     <OutputPath>bin\$(Configuration) $(Platform)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration) $(Platform)\</IntermediateOutputPath>
     <SuppressIces>ICE57</SuppressIces>
-    <Cultures>en-US</Cultures>
+    <Cultures></Cultures>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
     <DefineConstants>Debug</DefineConstants>
@@ -38,7 +38,7 @@
     <IntermediateOutputPath>obj\$(Configuration) $(Platform)\</IntermediateOutputPath>
     <SuppressValidation>False</SuppressValidation>
     <SuppressIces>ICE57</SuppressIces>
-    <Cultures>en-US</Cultures>
+    <Cultures></Cultures>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Product.wxs" />
