@@ -190,3 +190,9 @@ GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
 /DELETE THIS FOLDER packages
+
+# EventMessages compiler generated files
+**/EventMessages.h
+**/EventMessages.rc
+**/EventMessages.res
+**/MSG*.bin
