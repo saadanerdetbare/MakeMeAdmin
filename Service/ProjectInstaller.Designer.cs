@@ -31,11 +31,6 @@
                     {
                         this.serviceProcessInstaller.Dispose();
                     }
-
-                    if (this.eventLogInstaller != null)
-                    {
-                        this.eventLogInstaller.Dispose();
-                    }
                 }
             }
             finally
@@ -54,7 +49,6 @@
         {
             this.serviceProcessInstaller = new System.ServiceProcess.ServiceProcessInstaller();
             this.serviceInstaller = new System.ServiceProcess.ServiceInstaller();
-            this.eventLogInstaller = new System.Diagnostics.EventLogInstaller();
             //
             // serviceProcessInstaller
             //
@@ -69,17 +63,11 @@
             this.serviceInstaller.ServiceName = "MakeMeAdmin";
             this.serviceInstaller.StartType = System.ServiceProcess.ServiceStartMode.Automatic;
             //
-            // eventLogInstaller
-            //
-            this.eventLogInstaller.Log = "MakeMeAdmin";
-            this.eventLogInstaller.Source = "Make Me Admin";
-            //
             // ProjectInstaller
             //
             this.Installers.AddRange(new System.Configuration.Install.Installer[] {
             this.serviceProcessInstaller,
-            this.serviceInstaller,
-            this.eventLogInstaller});
+            this.serviceInstaller});
 
         }
 
@@ -97,10 +85,5 @@
         /// class is called by the install utility when installing a service application.
         /// </summary>
         private System.ServiceProcess.ServiceInstaller serviceInstaller;
-
-        /// <summary>
-        /// Installs the event log for the service.
-        /// </summary>
-        private System.Diagnostics.EventLogInstaller eventLogInstaller;
     }
 }

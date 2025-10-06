@@ -122,15 +122,19 @@
             <RemoveFolder Id="INSTALLFOLDER" On="uninstall" />
           </Component>
 
-          <!-- Event Log Configuration - Must be separate component to control timing -->
+          <!-- Event Log Configuration - Create event log and source with message file -->
           <Component Id="EventLogConfiguration" Guid="A8F3D9E1-5C2B-4A7F-9D3E-8B1C4F6A2E5D">
-            <!-- Configure EventMessageFile for the event log after service is installed -->
-            <RegistryValue Root="HKLM" Key="SYSTEM\CurrentControlSet\Services\EventLog\MakeMeAdmin\Make Me Admin"
-                          Name="EventMessageFile" Type="expandable" Value="[INSTALLFOLDER]EventMessages.dll" />
-            <RegistryValue Root="HKLM" Key="SYSTEM\CurrentControlSet\Services\EventLog\MakeMeAdmin\Make Me Admin"
-                          Name="CategoryMessageFile" Type="expandable" Value="[INSTALLFOLDER]EventMessages.dll" />
-            <RegistryValue Root="HKLM" Key="SYSTEM\CurrentControlSet\Services\EventLog\MakeMeAdmin\Make Me Admin"
-                          Name="TypesSupported" Type="integer" Value="7" KeyPath="yes" />
+            <!-- Create the MakeMeAdmin event log key -->
+            <RegistryKey Root="HKLM" Key="SYSTEM\CurrentControlSet\Services\EventLog\MakeMeAdmin">
+              <!-- Create the Make Me Admin event source -->
+              <RegistryKey Key="Make Me Admin">
+                <RegistryValue Name="EventMessageFile" Type="expandable" Value="[INSTALLFOLDER]EventMessages.dll" />
+                <RegistryValue Name="CategoryMessageFile" Type="expandable" Value="[INSTALLFOLDER]EventMessages.dll" />
+                <RegistryValue Name="TypesSupported" Type="integer" Value="7" KeyPath="yes" />
+              </RegistryKey>
+            </RegistryKey>
+            <!-- Clean up on uninstall -->
+            <RemoveRegistryKey Root="HKLM" Key="SYSTEM\CurrentControlSet\Services\EventLog\MakeMeAdmin" Action="removeOnUninstall" />
           </Component>
           <Component Id="MicrosoftTraceEventNuGetCommon" Guid="5685B8EB-59F0-4BD7-B0B6-9C1EA3DE9DF6">
             <File Id="Dia2Lib.dll" Source="$(var.Logging.TargetDir)\Dia2Lib.dll" KeyPath="no" />
