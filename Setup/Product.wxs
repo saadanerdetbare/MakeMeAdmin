@@ -178,6 +178,12 @@
     <!-- Custom Actions -->
     <Binary Id="CustomActionsBinary" SourceFile="$(var.WiXCustomAction.TargetPath)" />
 
+    <!-- Set CustomActionData for deferred action -->
+    <CustomAction Id="SetConfigureEventLogData"
+                  Property="ConfigureEventLogAction"
+                  Value="[INSTALLFOLDER]"
+                  Execute="immediate" />
+
     <CustomAction Id="ConfigureEventLogAction"
                   BinaryKey="CustomActionsBinary"
                   DllEntry="ConfigureEventLog"
@@ -186,7 +192,9 @@
                   Return="check" />
 
     <InstallExecuteSequence>
-      <!-- Run after files are installed and services are configured, but before starting services -->
+      <!-- Set the install folder property for the deferred action -->
+      <Custom Action="SetConfigureEventLogData" After="InstallFiles">NOT Installed OR REINSTALL</Custom>
+      <!-- Run after service starts to ensure event log is created -->
       <Custom Action="ConfigureEventLogAction" After="StartServices">NOT Installed OR REINSTALL</Custom>
     </InstallExecuteSequence>
 

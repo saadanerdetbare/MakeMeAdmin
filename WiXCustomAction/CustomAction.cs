@@ -69,7 +69,15 @@ namespace SinclairCC.MakeMeAdmin
         {
             try
             {
-                string installFolder = session["INSTALLFOLDER"];
+                // In deferred execution, CustomActionData contains the install folder as a string
+                string installFolder = session.CustomActionData.ToString();
+
+                if (string.IsNullOrEmpty(installFolder))
+                {
+                    session.Log("ERROR: Could not determine install folder from CustomActionData");
+                    return ActionResult.Failure;
+                }
+
                 session.Log($"Configuring event log with install folder: {installFolder}");
 
                 string eventMessageFile = System.IO.Path.Combine(installFolder, "EventMessages.dll");
