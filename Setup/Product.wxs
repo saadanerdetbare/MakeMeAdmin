@@ -17,6 +17,7 @@
       <ComponentRef Id="Service" />
       <ComponentRef Id="Service_da" />
       <ComponentRef Id="Service_fr" />
+      <ComponentRef Id="EventLogConfiguration" />
       <ComponentRef Id="MicrosoftTraceEventNuGetCommon" />
 		
       <?if $(var.Platform) = x64 ?>
@@ -120,6 +121,17 @@
             <RemoveRegistryKey Action="removeOnUninstall" Id="AddedSIDsValue" Key="Software\Sinclair Community College\Make Me Admin" Root="HKLM" />
             <RemoveFolder Id="INSTALLFOLDER" On="uninstall" />
           </Component>
+
+          <!-- Event Log Configuration - Must be separate component to control timing -->
+          <Component Id="EventLogConfiguration" Guid="A8F3D9E1-5C2B-4A7F-9D3E-8B1C4F6A2E5D">
+            <!-- Configure EventMessageFile for the event log after service is installed -->
+            <RegistryValue Root="HKLM" Key="SYSTEM\CurrentControlSet\Services\EventLog\MakeMeAdmin\Make Me Admin"
+                          Name="EventMessageFile" Type="expandable" Value="[INSTALLFOLDER]EventMessages.dll" />
+            <RegistryValue Root="HKLM" Key="SYSTEM\CurrentControlSet\Services\EventLog\MakeMeAdmin\Make Me Admin"
+                          Name="CategoryMessageFile" Type="expandable" Value="[INSTALLFOLDER]EventMessages.dll" />
+            <RegistryValue Root="HKLM" Key="SYSTEM\CurrentControlSet\Services\EventLog\MakeMeAdmin\Make Me Admin"
+                          Name="TypesSupported" Type="integer" Value="7" KeyPath="yes" />
+          </Component>
           <Component Id="MicrosoftTraceEventNuGetCommon" Guid="5685B8EB-59F0-4BD7-B0B6-9C1EA3DE9DF6">
             <File Id="Dia2Lib.dll" Source="$(var.Logging.TargetDir)\Dia2Lib.dll" KeyPath="no" />
             <File Id="Microsoft.Diagnostics.FastSerialization.dll" Source="$(var.Logging.TargetDir)\Microsoft.Diagnostics.FastSerialization.dll" KeyPath="no" />
@@ -174,29 +186,6 @@
       
       <Directory Id="ProgramMenuFolder" Name="Programs" />
     </Directory>
-
-    <!-- Custom Actions -->
-    <Binary Id="CustomActionsBinary" SourceFile="$(var.WiXCustomAction.TargetPath)" />
-
-    <!-- Set CustomActionData for deferred action -->
-    <CustomAction Id="SetConfigureEventLogData"
-                  Property="ConfigureEventLogAction"
-                  Value="[INSTALLFOLDER]"
-                  Execute="immediate" />
-
-    <CustomAction Id="ConfigureEventLogAction"
-                  BinaryKey="CustomActionsBinary"
-                  DllEntry="ConfigureEventLog"
-                  Execute="deferred"
-                  Impersonate="no"
-                  Return="check" />
-
-    <InstallExecuteSequence>
-      <!-- Set the install folder property for the deferred action -->
-      <Custom Action="SetConfigureEventLogData" After="InstallFiles">NOT Installed OR REINSTALL</Custom>
-      <!-- Run after service starts to ensure event log is created -->
-      <Custom Action="ConfigureEventLogAction" After="StartServices">NOT Installed OR REINSTALL</Custom>
-    </InstallExecuteSequence>
 
   </Product>
 </Wix>
