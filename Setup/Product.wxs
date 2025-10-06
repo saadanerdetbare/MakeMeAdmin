@@ -186,8 +186,8 @@
                   Return="check" />
 
     <InstallExecuteSequence>
-      <!-- Run after the service is installed but before it starts -->
-      <Custom Action="ConfigureEventLogAction" After="InstallServices">NOT Installed OR REINSTALL</Custom>
+      <!-- Run after files are installed and services are configured, but before starting services -->
+      <Custom Action="ConfigureEventLogAction" After="StartServices">NOT Installed OR REINSTALL</Custom>
     </InstallExecuteSequence>
 
   </Product>
