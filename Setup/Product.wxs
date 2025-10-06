@@ -104,6 +104,7 @@
           <Component Id="Service" Guid="DE98A440-7542-4394-9CAB-086B2906D29A">
             <File Id="ServiceExe" Name="$(var.Service.TargetFileName)" Source="$(var.Service.TargetPath)" KeyPath="yes" />
             <File Id="ServiceExeConfig" Name="$(var.Service.TargetFileName).config" Source="$(var.Service.TargetPath).config" KeyPath="no" />
+            <File Id="EventMessagesDll" Name="EventMessages.dll" Source="$(var.Service.TargetDir)EventMessages.dll" KeyPath="no" />
 
             <ServiceInstall DisplayName="[ProductName]" Name="MakeMeAdmin" Start="auto" Type="shareProcess" Vital="yes"
                             Description="!(loc.ServiceDescription)"
@@ -118,13 +119,13 @@
 
             <!-- Create MakeMeAdmin Event Log and register application as source -->
             <RegistryKey Id="EventLogKey" Root="HKLM" Key="SYSTEM\CurrentControlSet\Services\EventLog\MakeMeAdmin" ForceCreateOnInstall="yes">
-              <RegistryValue Name="EventMessageFile" Type="expandable" Value="[INSTALLFOLDER]$(var.Service.TargetFileName)" />
-              <RegistryValue Name="CategoryMessageFile" Type="expandable" Value="[INSTALLFOLDER]$(var.Service.TargetFileName)" />
+              <RegistryValue Name="EventMessageFile" Type="expandable" Value="[INSTALLFOLDER]EventMessages.dll" />
+              <RegistryValue Name="CategoryMessageFile" Type="expandable" Value="[INSTALLFOLDER]EventMessages.dll" />
               <RegistryValue Name="TypesSupported" Type="integer" Value="7" />
             </RegistryKey>
             <RegistryKey Id="EventLogSourceKey" Root="HKLM" Key="SYSTEM\CurrentControlSet\Services\EventLog\MakeMeAdmin\Make Me Admin" ForceCreateOnInstall="yes">
-              <RegistryValue Name="EventMessageFile" Type="expandable" Value="[INSTALLFOLDER]$(var.Service.TargetFileName)" />
-              <RegistryValue Name="CategoryMessageFile" Type="expandable" Value="[INSTALLFOLDER]$(var.Service.TargetFileName)" />
+              <RegistryValue Name="EventMessageFile" Type="expandable" Value="[INSTALLFOLDER]EventMessages.dll" />
+              <RegistryValue Name="CategoryMessageFile" Type="expandable" Value="[INSTALLFOLDER]EventMessages.dll" />
               <RegistryValue Name="TypesSupported" Type="integer" Value="7" />
             </RegistryKey>
 

@@ -168,6 +168,17 @@
       <Version>6.0.0</Version>
     </PackageReference>
   </ItemGroup>
+  <!-- Compile Event Message file -->
+  <Target Name="CompileEventMessages" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <VCToolsInstallDir Condition="'$(VCToolsInstallDir)' == ''">C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.44.35207\</VCToolsInstallDir>
+    </PropertyGroup>
+    <MakeDir Directories="$(OutDir)" />
+    <Exec Command="mc.exe -U EventMessages.mc -h . -r ." WorkingDirectory="$(ProjectDir)" ContinueOnError="false" />
+    <Exec Command="rc.exe EventMessages.rc" WorkingDirectory="$(ProjectDir)" ContinueOnError="false" />
+    <Exec Command="&quot;$(VCToolsInstallDir)bin\Hostx64\x86\link.exe&quot; -dll -noentry -machine:X86 -out:&quot;$(OutDir)EventMessages.dll&quot; EventMessages.res" WorkingDirectory="$(ProjectDir)" ContinueOnError="false" Condition="'$(Platform)' == 'x86'" />
+    <Exec Command="&quot;$(VCToolsInstallDir)bin\Hostx64\x64\link.exe&quot; -dll -noentry -machine:X64 -out:&quot;$(OutDir)EventMessages.dll&quot; EventMessages.res" WorkingDirectory="$(ProjectDir)" ContinueOnError="false" Condition="'$(Platform)' == 'x64'" />
+  </Target>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Multilingual App Toolkit\Microsoft.Multilingual.ResxResources.targets" Label="MultilingualAppToolkit" Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\Multilingual App Toolkit\v$(MultilingualAppToolkitVersion)\Microsoft.Multilingual.ResxResources.targets')" />
   <Target Name="MATPrerequisite" BeforeTargets="PrepareForBuild" Condition="!Exists('$(MSBuildExtensionsPath)\Microsoft\Multilingual App Toolkit\Microsoft.Multilingual.ResxResources.targets')" Label="MultilingualAppToolkit">
