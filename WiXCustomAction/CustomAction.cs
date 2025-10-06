@@ -1,5 +1,5 @@
 // 
-// Copyright © 2010-2019, Sinclair Community College
+// Copyright ï¿½ 2010-2019, Sinclair Community College
 // Licensed under the GNU General Public License, version 3.
 // See the LICENSE file in the project root for full license information.  
 //
@@ -24,6 +24,7 @@ namespace SinclairCC.MakeMeAdmin
     using System.Collections.Generic;
     using System.Text;
     using Microsoft.Deployment.WindowsInstaller;
+    using Microsoft.Win32;
 
     public class CustomActions
     {
@@ -61,6 +62,61 @@ namespace SinclairCC.MakeMeAdmin
             session.Log("Finished removing saved user list.");
 
             return ActionResult.Success;
+        }
+
+        [CustomAction]
+        public static ActionResult ConfigureEventLog(Session session)
+        {
+            try
+            {
+                string installFolder = session["INSTALLFOLDER"];
+                session.Log($"Configuring event log with install folder: {installFolder}");
+
+                string eventMessageFile = System.IO.Path.Combine(installFolder, "EventMessages.dll");
+                session.Log($"Event message file path: {eventMessageFile}");
+
+                // Configure the MakeMeAdmin event log
+                using (RegistryKey eventLogKey = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\EventLog\MakeMeAdmin", true))
+                {
+                    if (eventLogKey != null)
+                    {
+                        eventLogKey.SetValue("EventMessageFile", eventMessageFile, RegistryValueKind.ExpandString);
+                        eventLogKey.SetValue("CategoryMessageFile", eventMessageFile, RegistryValueKind.ExpandString);
+                        eventLogKey.SetValue("TypesSupported", 7, RegistryValueKind.DWord);
+                        session.Log("Configured MakeMeAdmin event log registry key");
+                    }
+                    else
+                    {
+                        session.Log("WARNING: MakeMeAdmin event log key not found");
+                    }
+                }
+
+                // Configure the Make Me Admin event source
+                using (RegistryKey sourceKey = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\EventLog\MakeMeAdmin\Make Me Admin", true))
+                {
+                    if (sourceKey != null)
+                    {
+                        sourceKey.SetValue("EventMessageFile", eventMessageFile, RegistryValueKind.ExpandString);
+                        sourceKey.SetValue("CategoryMessageFile", eventMessageFile, RegistryValueKind.ExpandString);
+                        sourceKey.SetValue("TypesSupported", 7, RegistryValueKind.DWord);
+                        session.Log("Configured Make Me Admin event source registry key");
+                    }
+                    else
+                    {
+                        session.Log("WARNING: Make Me Admin event source key not found");
+                    }
+                }
+
+                session.Log("Event log configuration completed successfully");
+                return ActionResult.Success;
+            }
+            catch (Exception ex)
+            {
+                session.Log($"ERROR configuring event log: {ex.Message}");
+                session.Log($"Stack trace: {ex.StackTrace}");
+                // Don't fail the installation if event log configuration fails
+                return ActionResult.Success;
+            }
         }
     }
 }

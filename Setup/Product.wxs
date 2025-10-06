@@ -117,21 +117,7 @@
             </ServiceInstall>
             <ServiceControl Id="MakeMeAdmin" Name="MakeMeAdmin" Remove="uninstall" Start="install" Stop="both" Wait="yes" />
 
-            <!-- Create MakeMeAdmin Event Log and register application as source -->
-            <RegistryKey Id="EventLogKey" Root="HKLM" Key="SYSTEM\CurrentControlSet\Services\EventLog\MakeMeAdmin" ForceCreateOnInstall="yes">
-              <RegistryValue Name="EventMessageFile" Type="expandable" Value="[INSTALLFOLDER]EventMessages.dll" />
-              <RegistryValue Name="CategoryMessageFile" Type="expandable" Value="[INSTALLFOLDER]EventMessages.dll" />
-              <RegistryValue Name="TypesSupported" Type="integer" Value="7" />
-            </RegistryKey>
-            <RegistryKey Id="EventLogSourceKey" Root="HKLM" Key="SYSTEM\CurrentControlSet\Services\EventLog\MakeMeAdmin\Make Me Admin" ForceCreateOnInstall="yes">
-              <RegistryValue Name="EventMessageFile" Type="expandable" Value="[INSTALLFOLDER]EventMessages.dll" />
-              <RegistryValue Name="CategoryMessageFile" Type="expandable" Value="[INSTALLFOLDER]EventMessages.dll" />
-              <RegistryValue Name="TypesSupported" Type="integer" Value="7" />
-            </RegistryKey>
-
             <RemoveRegistryKey Action="removeOnUninstall" Id="AddedSIDsValue" Key="Software\Sinclair Community College\Make Me Admin" Root="HKLM" />
-            <!-- Remove event log source on uninstall, but keep the log itself -->
-            <RemoveRegistryKey Action="removeOnUninstall" Id="EventLogSourceRemove" Key="SYSTEM\CurrentControlSet\Services\EventLog\MakeMeAdmin\Make Me Admin" Root="HKLM" />
             <RemoveFolder Id="INSTALLFOLDER" On="uninstall" />
           </Component>
           <Component Id="MicrosoftTraceEventNuGetCommon" Guid="5685B8EB-59F0-4BD7-B0B6-9C1EA3DE9DF6">
@@ -188,5 +174,21 @@
       
       <Directory Id="ProgramMenuFolder" Name="Programs" />
     </Directory>
+
+    <!-- Custom Actions -->
+    <Binary Id="CustomActionsBinary" SourceFile="$(var.WiXCustomAction.TargetPath)" />
+
+    <CustomAction Id="ConfigureEventLogAction"
+                  BinaryKey="CustomActionsBinary"
+                  DllEntry="ConfigureEventLog"
+                  Execute="deferred"
+                  Impersonate="no"
+                  Return="check" />
+
+    <InstallExecuteSequence>
+      <!-- Run after the service is installed but before it starts -->
+      <Custom Action="ConfigureEventLogAction" After="InstallServices">NOT Installed OR REINSTALL</Custom>
+    </InstallExecuteSequence>
+
   </Product>
 </Wix>
