@@ -122,19 +122,11 @@
             <RemoveFolder Id="INSTALLFOLDER" On="uninstall" />
           </Component>
 
-          <!-- Event Log Configuration - Create event log and source with message file -->
+          <!-- Event Log Configuration Component - just tracks the feature -->
           <Component Id="EventLogConfiguration" Guid="A8F3D9E1-5C2B-4A7F-9D3E-8B1C4F6A2E5D">
-            <!-- Create the MakeMeAdmin event log key -->
-            <RegistryKey Root="HKLM" Key="SYSTEM\CurrentControlSet\Services\EventLog\MakeMeAdmin">
-              <!-- Create the Make Me Admin event source -->
-              <RegistryKey Key="Make Me Admin">
-                <RegistryValue Name="EventMessageFile" Type="expandable" Value="[INSTALLFOLDER]EventMessages.dll" />
-                <RegistryValue Name="CategoryMessageFile" Type="expandable" Value="[INSTALLFOLDER]EventMessages.dll" />
-                <RegistryValue Name="TypesSupported" Type="integer" Value="7" KeyPath="yes" />
-              </RegistryKey>
-            </RegistryKey>
-            <!-- Clean up on uninstall -->
-            <RemoveRegistryKey Root="HKLM" Key="SYSTEM\CurrentControlSet\Services\EventLog\MakeMeAdmin" Action="removeOnUninstall" />
+            <!-- Dummy registry key to track component installation -->
+            <RegistryValue Root="HKLM" Key="Software\Sinclair Community College\Make Me Admin"
+                          Name="EventLogConfigured" Type="integer" Value="1" KeyPath="yes" />
           </Component>
           <Component Id="MicrosoftTraceEventNuGetCommon" Guid="5685B8EB-59F0-4BD7-B0B6-9C1EA3DE9DF6">
             <File Id="Dia2Lib.dll" Source="$(var.Logging.TargetDir)\Dia2Lib.dll" KeyPath="no" />
@@ -190,6 +182,51 @@
       
       <Directory Id="ProgramMenuFolder" Name="Programs" />
     </Directory>
+
+    <!-- Custom Actions for Event Log Registration -->
+    <!-- Immediate action to set install folder for deferred action -->
+    <CustomAction Id="SetEventLogProperties"
+                  Property="RegisterEventLog"
+                  Value="[INSTALLFOLDER]"
+                  Execute="immediate" />
+
+    <!-- Set PowerShell command for registering event log -->
+    <SetProperty Id="RegisterEventLog"
+                 After="SetEventLogProperties"
+                 Sequence="execute"
+                 Value="&quot;[WindowsFolder]System32\WindowsPowerShell\v1.0\powershell.exe&quot; -NoProfile -ExecutionPolicy Bypass -Command &quot;New-EventLog -LogName 'MakeMeAdmin' -Source 'Make Me Admin' -ErrorAction SilentlyContinue; $dllPath = Join-Path '[INSTALLFOLDER]' 'EventMessages.dll'; Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\MakeMeAdmin\Make Me Admin' -Name 'EventMessageFile' -Value $dllPath -ErrorAction SilentlyContinue; Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\MakeMeAdmin\Make Me Admin' -Name 'CategoryMessageFile' -Value $dllPath -ErrorAction SilentlyContinue; Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\MakeMeAdmin\Make Me Admin' -Name 'TypesSupported' -Value 7 -Type DWord -ErrorAction SilentlyContinue&quot;" />
+
+    <!-- Deferred action to register event log using PowerShell -->
+    <CustomAction Id="RegisterEventLog"
+                  BinaryKey="WixCA"
+                  DllEntry="WixQuietExec"
+                  Execute="deferred"
+                  Impersonate="no"
+                  Return="ignore" />
+
+    <!-- Deferred action to remove event log on uninstall -->
+    <CustomAction Id="UnregisterEventLog"
+                  BinaryKey="WixCA"
+                  DllEntry="WixQuietExec"
+                  Execute="deferred"
+                  Impersonate="no"
+                  Return="ignore" />
+
+    <SetProperty Id="UnregisterEventLog"
+                 Sequence="execute"
+                 Before="UnregisterEventLog"
+                 Value="&quot;[WindowsFolder]System32\WindowsPowerShell\v1.0\powershell.exe&quot; -NoProfile -ExecutionPolicy Bypass -Command &quot;Remove-EventLog -LogName 'MakeMeAdmin' -ErrorAction SilentlyContinue&quot;" />
+
+    <InstallExecuteSequence>
+      <!-- Set properties for deferred actions -->
+      <Custom Action="SetEventLogProperties" After="InstallFiles">NOT Installed OR REINSTALL</Custom>
+
+      <!-- Register event log after service is started -->
+      <Custom Action="RegisterEventLog" After="StartServices">NOT Installed OR REINSTALL</Custom>
+
+      <!-- Unregister event log before removing files -->
+      <Custom Action="UnregisterEventLog" Before="RemoveFiles">Installed AND NOT REINSTALL</Custom>
+    </InstallExecuteSequence>
 
   </Product>
 </Wix>
