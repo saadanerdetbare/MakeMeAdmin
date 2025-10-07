@@ -106,6 +106,7 @@
             <File Id="ServiceExe" Name="$(var.Service.TargetFileName)" Source="$(var.Service.TargetPath)" KeyPath="yes" />
             <File Id="ServiceExeConfig" Name="$(var.Service.TargetFileName).config" Source="$(var.Service.TargetPath).config" KeyPath="no" />
             <File Id="EventMessagesDll" Name="EventMessages.dll" Source="$(var.Service.TargetDir)EventMessages.dll" KeyPath="no" />
+            <File Id="ConfigureEventLogScript" Name="ConfigureEventLog.ps1" Source="ConfigureEventLog.ps1" KeyPath="no" />
 
             <ServiceInstall DisplayName="[ProductName]" Name="MakeMeAdmin" Start="auto" Type="shareProcess" Vital="yes"
                             Description="!(loc.ServiceDescription)"
@@ -184,25 +185,31 @@
     </Directory>
 
     <!-- Custom Actions for Event Log Registration -->
-    <!-- Immediate action to set install folder for deferred action -->
-    <CustomAction Id="SetEventLogProperties"
-                  Property="RegisterEventLog"
-                  Value="[INSTALLFOLDER]"
-                  Execute="immediate" />
-
-    <!-- Set PowerShell command for registering event log -->
-    <SetProperty Id="RegisterEventLog"
-                 After="SetEventLogProperties"
-                 Sequence="execute"
-                 Value="&quot;[WindowsFolder]System32\WindowsPowerShell\v1.0\powershell.exe&quot; -NoProfile -ExecutionPolicy Bypass -Command &quot;New-EventLog -LogName 'MakeMeAdmin' -Source 'Make Me Admin' -ErrorAction SilentlyContinue; $dllPath = Join-Path '[INSTALLFOLDER]' 'EventMessages.dll'; Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\MakeMeAdmin\Make Me Admin' -Name 'EventMessageFile' -Value $dllPath -ErrorAction SilentlyContinue; Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\MakeMeAdmin\Make Me Admin' -Name 'CategoryMessageFile' -Value $dllPath -ErrorAction SilentlyContinue; Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\MakeMeAdmin\Make Me Admin' -Name 'TypesSupported' -Value 7 -Type DWord -ErrorAction SilentlyContinue&quot;" />
-
-    <!-- Deferred action to register event log using PowerShell -->
-    <CustomAction Id="RegisterEventLog"
+    <!-- Create event log with New-EventLog (creates all registry keys automatically) -->
+    <CustomAction Id="CreateEventLog"
                   BinaryKey="WixCA"
                   DllEntry="WixQuietExec"
                   Execute="deferred"
                   Impersonate="no"
                   Return="ignore" />
+
+    <SetProperty Id="CreateEventLog"
+                 Sequence="execute"
+                 Before="CreateEventLog"
+                 Value="&quot;[WindowsFolder]System32\WindowsPowerShell\v1.0\powershell.exe&quot; -NoProfile -ExecutionPolicy Bypass -Command &quot;if (-not [System.Diagnostics.EventLog]::SourceExists('Make Me Admin')) { New-EventLog -LogName 'MakeMeAdmin' -Source 'Make Me Admin' }&quot;" />
+
+    <!-- Set EventMessageFile registry keys using PowerShell script -->
+    <CustomAction Id="SetEventMessageFile"
+                  BinaryKey="WixCA"
+                  DllEntry="WixQuietExec"
+                  Execute="deferred"
+                  Impersonate="no"
+                  Return="ignore" />
+
+    <SetProperty Id="SetEventMessageFile"
+                 Sequence="execute"
+                 Before="SetEventMessageFile"
+                 Value="&quot;[WindowsFolder]System32\WindowsPowerShell\v1.0\powershell.exe&quot; -NoProfile -ExecutionPolicy Bypass -File &quot;[INSTALLFOLDER]ConfigureEventLog.ps1&quot; -InstallFolder &quot;[INSTALLFOLDER]&quot;" />
 
     <!-- Deferred action to remove event log on uninstall -->
     <CustomAction Id="UnregisterEventLog"
@@ -218,11 +225,11 @@
                  Value="&quot;[WindowsFolder]System32\WindowsPowerShell\v1.0\powershell.exe&quot; -NoProfile -ExecutionPolicy Bypass -Command &quot;Remove-EventLog -LogName 'MakeMeAdmin' -ErrorAction SilentlyContinue&quot;" />
 
     <InstallExecuteSequence>
-      <!-- Set properties for deferred actions -->
-      <Custom Action="SetEventLogProperties" After="InstallFiles">NOT Installed OR REINSTALL</Custom>
+      <!-- Create event log after files are installed -->
+      <Custom Action="CreateEventLog" After="InstallFiles">NOT Installed OR REINSTALL</Custom>
 
-      <!-- Register event log after service is started -->
-      <Custom Action="RegisterEventLog" After="StartServices">NOT Installed OR REINSTALL</Custom>
+      <!-- Set EventMessageFile after service is started (gives time for registry commit) -->
+      <Custom Action="SetEventMessageFile" After="StartServices">NOT Installed OR REINSTALL</Custom>
 
       <!-- Unregister event log before removing files -->
       <Custom Action="UnregisterEventLog" Before="RemoveFiles">Installed AND NOT REINSTALL</Custom>
